@@ -15,7 +15,7 @@ public class AInteger {
         this.value = other.value;
     }
 
-    public AInteger parse(String s){
+    public static AInteger parse(String s){
         return new AInteger(s);
     }
 
@@ -23,7 +23,15 @@ public class AInteger {
         return this.value;
     }
 
-    public boolean isGreater(AInteger other){
+    private boolean isNeg(){
+        return this.value.charAt(0) == '-';
+    }
+
+    private AInteger makePos(){
+        return AInteger.parse(this.value.substring(1));
+    }
+
+    private boolean isGreater(AInteger other){
         String x1 = this.value;
         String x2 = other.value;
 
@@ -46,124 +54,167 @@ public class AInteger {
         }
     }
 
-    public AInteger add(AInteger other){
-        if(other.value.charAt(0)!='-'){
-            String result = "";
+    private String addString(String x1, String x2){
+        String result = "";
+        int n1 = x1.length(), n2 = x2.length();
+        int carry = 0;
 
-            String x1 = this.value;
-            String x2 = other.value;
+        int diff = (n1<n2?n2-n1:n1-n2);
+        String zeroes = "";
+        for(int i=0;i<diff;i++){
+            zeroes+="0";
+        }
 
-            int n1 = x1.length(), n2 = x2.length();
+        if(n1<n2){
+            x1 = zeroes + x1;
+            n1 += diff;
+        }
+        else{
+            x2 = zeroes + x2;
+            n2 += diff;
+        }
+
+        for(int i = n1-1; i>=0; i--){
+            int a1 = x1.charAt(i) - '0';
+            int a2 = x2.charAt(i) - '0';
+
+            int sum = a1 + a2 + carry;
+            carry = sum/10;
+
+            sum%=10;
+            result = Integer.toString(sum) + result;
+        }
+
+        if(carry > 0){
+            result = Integer.toString(carry) + result;
+        }
+
+        return result;
+    }
+
+    private String subtractString(String x1, String x2){
+        if(x1.equals(x2))
+            return "0";
+        String result = "";
+
+        int n1 = x1.length();
+        int n2 = x2.length();
+
+        int diff = n1-n2;
+        String zeroes = "";
+
+        for(int i=0;i<diff;i++){
+            zeroes += "0";
+        }
+
+        x2 = zeroes + x2;
+        n2 = n1;
+
+        boolean carrying = false;
+
+        for(int i = n1-1; i>=0; i--){
+            int a1 = x1.charAt(i) - '0';
+            int a2 = x2.charAt(i) - '0';
+
+            if(carrying){
+                a1 -= 1;
+                carrying = false;
+            }
+
+            if(a1<a2 && i>0){
+                carrying = true;
+                a1 += 10;
+            }
+
+            int d = a1 - a2;
+            result = Integer.toString(d)+result;
+        }
+
+        int index = 0;
+        while(index<result.length() && result.charAt(index)=='0'){
+            index++;
+        }
+
+        result = result.substring(index);
+
+        return result;
+    }
+
+    private String multiplyString(String x1, String x2){
+        String result = "0";
+        for(int i=0;i<x2.length();i++){
+            int a2 = x2.charAt(i) - '0';
+            String currProduct = "";
+            for(int j=x2.length()-1;j>i;j--){
+                currProduct += "0";
+            }
             int carry = 0;
+            for(int j = x1.length()-1; j>=0; j--){
+                int a1 = x1.charAt(j) - '0';
+                int product = a1 * a2 + carry;
 
-            int diff = (n1<n2?n2-n1:n1-n2);
-            String zeroes = "";
-            for(int i=0;i<diff;i++){
-                zeroes+="0";
-            }
-
-            if(n1<n2){
-                x1 = zeroes + x1;
-                n1 += diff;
-            }
-            else{
-                x2 = zeroes + x2;
-                n2 += diff;
-            }
-
-            for(int i = n1-1; i>=0; i--){
-                int a1 = x1.charAt(i) - '0';
-                int a2 = x2.charAt(i) - '0';
-
-                int sum = a1 + a2 + carry;
-                carry = sum/10;
-                
-                sum%=10;
-                result = Integer.toString(sum) + result;
+                carry = product/10;
+                currProduct = Integer.toString(product%10) + currProduct;
             }
 
             if(carry > 0){
-                result = Integer.toString(carry) + result;
+                currProduct = Integer.toString(carry) + currProduct;
             }
 
-            return new AInteger(result);
+            result = addString(result, currProduct);
+        }
+
+        return result;
+    }
+   
+    public AInteger add(AInteger other){
+        if(!(other.isNeg() || this.isNeg())){
+            return AInteger.parse(addString(this.value, other.value));
+        }
+        else if(this.isNeg() && !other.isNeg()){
+            return other.subtract(this.makePos());
+        }
+        else if(!this.isNeg()){
+            return this.subtract(other.makePos());
         }
         else{
-            return subtract(new AInteger(other.value.substring(1)));
+            return AInteger.parse("-"+this.makePos().add(other.makePos()).value);
         }
+
     }
 
     public AInteger subtract(AInteger other){
-        if(other.value.charAt(0)=='-'){
-            return this.add(new AInteger(other.value.substring(1)));
-        }
-        else{
+        if(!(other.isNeg() || this.isNeg())){
             if(this.isGreater(other)){
-                String result = "";
-
-                String x1 = this.value;
-                String x2 = other.value;
-
-                int n1 = x1.length();
-                int n2 = x2.length();
-
-                int diff = (n1<n2?n2-n1:n1-n2);
-                String zeroes = "";
-
-                for(int i=0;i<diff;i++){
-                    zeroes += "0";
-                }
-
-                if(n1<n2){
-                    x1 = zeroes + x1;
-                    n1 = n2;
-                }
-                else{
-                    x2 = zeroes + x2;
-                    n2 = n1;
-                }
-
-                boolean carrying = false;
-
-                for(int i = n1-1; i>=0; i--){
-                    int a1 = x1.charAt(i) - '0';
-                    int a2 = x2.charAt(i) - '0';
-
-                    if(carrying){
-                        a1 -= 1;
-                        carrying = false;
-                    }
-
-                    if(a1<a2 && i>0){
-                        carrying = true;
-                        a1 += 10;
-                    }
-
-                    int d = a1 - a2;
-                    result = Integer.toString(d)+result;
-                }
-
-                int index = 0;
-                while(index<result.length() && result.charAt(index)=='0'){
-                    index++;
-                }
-
-                result = result.substring(index);
-
-                return new AInteger(result);
-            }
-            else if(this.value.equals(other.value)){
-                return new AInteger();
+                return AInteger.parse(subtractString(this.value, other.value));
             }
             else{
-                return new AInteger('-' + other.subtract(this).getValue());
+                return AInteger.parse("-"+subtractString(other.value, this.value));
             }
+        }
+        else if(this.isNeg() && !other.isNeg()){
+            return AInteger.parse("-"+this.makePos().add(other).value);
+        }
+        else if(!this.isNeg()){
+            return this.add(other.makePos());
+        }
+        else{
+            return other.makePos().subtract(this.makePos());
         }
     }
 
     public AInteger multiply(AInteger other){
-        String result = "";
-        return new AInteger(result);
+        if((this.isNeg() && other.isNeg()) || !(this.isNeg() || other.isNeg())){
+            return AInteger.parse(multiplyString(this.value, other.value));
+        }
+        else{
+            if(this.isNeg()){
+                return AInteger.parse("-" + other.multiply(this.makePos()).value);
+            }
+            else{
+                return AInteger.parse("-" + this.multiply(other.makePos()).value);
+            }
+        }
     }
 
     public AInteger divide(AInteger other){
