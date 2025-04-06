@@ -31,10 +31,45 @@ public class AInteger {
         return AInteger.parse(this.value.substring(1));
     }
 
+    private String trimZeroes(String s){
+        if(s.equals("0") || s.equals("-0")){
+            return "0";
+        }
+        else{
+            int index=0;
+            for(;s.charAt(index)=='0';index++);
+            return s.substring(index);
+        }
+    }
+    
+    private boolean isZero(){
+        return (this.value.equals("0") || this.value.equals("-0"));
+    }
+
     private boolean isGreater(AInteger other){
         String x1 = this.value;
         String x2 = other.value;
 
+        if(x1.length() > x2.length()){
+            return true;
+        }
+        else if(x1.length() < x2.length()){
+            return false;
+        }
+        else{
+            for(int i=0; i<x1.length();i++){
+                if(x1.charAt(i) > x2.charAt(i)){
+                    return true;
+                }
+                else if(x2.charAt(i) > x1.charAt(i)){
+                    return false;
+                }
+            }
+            return false;
+        }
+    }
+
+    private boolean firstIsGreater(String x1, String x2){
         if(x1.length() > x2.length()){
             return true;
         }
@@ -89,7 +124,7 @@ public class AInteger {
             result = Integer.toString(carry) + result;
         }
 
-        return result;
+        return trimZeroes(result);
     }
 
     private String subtractString(String x1, String x2){
@@ -130,14 +165,7 @@ public class AInteger {
             result = Integer.toString(d)+result;
         }
 
-        int index = 0;
-        while(index<result.length() && result.charAt(index)=='0'){
-            index++;
-        }
-
-        result = result.substring(index);
-
-        return result;
+        return trimZeroes(result);
     }
 
     private String multiplyString(String x1, String x2){
@@ -164,10 +192,30 @@ public class AInteger {
             result = addString(result, currProduct);
         }
 
-        return result;
+        return trimZeroes(result);
     }
    
+    private String divideString(String x1, String x2){
+        String result = "";
+        String currDividend = "";
+        for(int i=0;i<x1.length();i++){
+            currDividend += x1.charAt(i);
+ 
+            int q = 0;
+            for(;firstIsGreater(currDividend, x2) || currDividend.equals(x2);q++){
+                currDividend = subtractString(currDividend, x2);
+            }
+            result += Integer.toString(q);
+            
+        }
+
+        return trimZeroes(result);
+    }
+    
     public AInteger add(AInteger other){
+        if(this.isZero() || other.isZero()){
+            return AInteger.parse("0");
+        }
         if(!(other.isNeg() || this.isNeg())){
             return AInteger.parse(addString(this.value, other.value));
         }
@@ -184,6 +232,9 @@ public class AInteger {
     }
 
     public AInteger subtract(AInteger other){
+        if(this.isZero() && other.isZero()){
+            return AInteger.parse("0");
+        }
         if(!(other.isNeg() || this.isNeg())){
             if(this.isGreater(other)){
                 return AInteger.parse(subtractString(this.value, other.value));
@@ -204,8 +255,16 @@ public class AInteger {
     }
 
     public AInteger multiply(AInteger other){
+        if(this.isZero() || other.isZero()){
+            return AInteger.parse("0");
+        }
         if((this.isNeg() && other.isNeg()) || !(this.isNeg() || other.isNeg())){
-            return AInteger.parse(multiplyString(this.value, other.value));
+            if(!this.isNeg()){
+                return AInteger.parse(multiplyString(this.value, other.value));
+            }
+            else{
+                return AInteger.parse(multiplyString(this.makePos().value, other.makePos().value));
+            }
         }
         else{
             if(this.isNeg()){
@@ -218,7 +277,30 @@ public class AInteger {
     }
 
     public AInteger divide(AInteger other){
-        String result = "";
-        return new AInteger(result);
+        if(other.value.equals("0")){
+            System.out.println("Error: Division by zero!");
+            return null;
+        }
+        else if(this.value.equals("0")){
+            return AInteger.parse("0");
+        }
+        else{
+            if((this.isNeg() && other.isNeg()) || !(this.isNeg() || other.isNeg())){
+                if(!this.isNeg()){
+                    return AInteger.parse(divideString(this.value, other.value));
+                }
+                else{
+                    return AInteger.parse(divideString(this.makePos().value, other.makePos().value));
+                }
+            }
+            else{
+                if(this.isNeg()){
+                    return AInteger.parse("-" + this.makePos().divide(other).value);
+                }
+                else{
+                    return AInteger.parse("-" + this.divide(other.makePos()).value);
+                }
+            }
+        }
     }
 }

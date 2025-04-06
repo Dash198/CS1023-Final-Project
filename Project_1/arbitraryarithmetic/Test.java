@@ -2,13 +2,26 @@ package arbitraryarithmetic;
 
 public class Test {
     public static void main(String[] args) {
-        AInteger a = new AInteger("14344163160445929942680697312322");
-        AInteger b = new AInteger("23017167694823904478474013730519");
-        AInteger c = a.multiply(b);
+        AInteger a = new AInteger(args[0]);
+        AInteger b = new AInteger(args[2]);
+        AInteger c;
+
+        if(args[1].equals("add")){
+            c = a.add(b);
+        }
+        else if(args[1].equals("sub")){
+            c = a.subtract(b);
+        }
+        else if(args[1].equals("mul")){
+            c = a.multiply(b);
+        }
+        else{
+            c = a.divide(b);
+        }
 
         System.out.println("Expected: -5, Actual: " + c.getValue());
 
-        if (c.getValue().equals("330162008905899217578310782382075660760972861550182008086155118")) {
+        if (c.getValue().equals("17804979")) {
             System.out.println("Test passed ✅");
         } else {
             System.out.println("Test failed ❌");
