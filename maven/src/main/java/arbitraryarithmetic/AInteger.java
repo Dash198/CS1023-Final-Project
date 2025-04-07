@@ -3,7 +3,7 @@ package arbitraryarithmetic;
 public class AInteger {
     private String value;
 
-    public AInteger(){
+    AInteger(){
         this.value = "0";
     }
 
@@ -37,15 +37,8 @@ public class AInteger {
         }
         else{
             int index=0;
-            while(index < s.length() && s.charAt(index)=='0'){
-                index++;
-            }
-            if(index==s.length()){
-                return "0";
-            }
-            else{
-                return s.substring(index);
-            }
+            for(;s.charAt(index)=='0';index++);
+            return s.substring(index);
         }
     }
     
@@ -97,7 +90,7 @@ public class AInteger {
     }
 
     private String addString(String x1, String x2){
-        String result = "0";
+        String result = "";
         int n1 = x1.length(), n2 = x2.length();
         int carry = 0;
 
@@ -203,7 +196,7 @@ public class AInteger {
     }
    
     private String divideString(String x1, String x2){
-        String result = "0";
+        String result = "";
         String currDividend = "";
         for(int i=0;i<x1.length();i++){
             currDividend += x1.charAt(i);
@@ -309,5 +302,31 @@ public class AInteger {
                 }
             }
         }
+    }
+
+    public static void main(String[] args){
+        String op = args[0];
+        AInteger x1 = AInteger.parse(args[1]);
+        AInteger x2 = AInteger.parse(args[2]);
+
+        AInteger y;
+
+        if(op.equals("add")){
+            y = x1.add(x2);
+        }
+        else if(op.equals("sub")){
+            y = x1.subtract(x2);
+        }
+        else if(op.equals("mul")){
+            y = x1.multiply(x2);
+        }
+        else if(op.equals("div")){
+            y = x1.divide(x2);
+        }
+        else{
+            y = new AInteger();
+        }
+
+        System.out.println(y.value);
     }
 }
