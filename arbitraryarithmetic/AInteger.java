@@ -97,7 +97,7 @@ public class AInteger {
     }
 
     private String addString(String x1, String x2){
-        String result = "0";
+        String result = "";
         int n1 = x1.length(), n2 = x2.length();
         int carry = 0;
 
@@ -177,12 +177,10 @@ public class AInteger {
 
     private String multiplyString(String x1, String x2){
         String result = "0";
-        for(int i=0;i<x2.length();i++){
+        for(int i=x2.length()-1;i>=0;i--){
             int a2 = x2.charAt(i) - '0';
             String currProduct = "";
-            for(int j=x2.length()-1;j>i;j--){
-                currProduct += "0";
-            }
+            
             int carry = 0;
             for(int j = x1.length()-1; j>=0; j--){
                 int a1 = x1.charAt(j) - '0';
@@ -196,6 +194,10 @@ public class AInteger {
                 currProduct = Integer.toString(carry) + currProduct;
             }
 
+            for(int j=0;j<x2.length()-1-i;j++){
+                currProduct += "0";
+            }
+
             result = addString(result, currProduct);
         }
 
@@ -207,13 +209,14 @@ public class AInteger {
         String currDividend = "";
         for(int i=0;i<x1.length();i++){
             currDividend += x1.charAt(i);
- 
+            currDividend = trimZeroes(currDividend);
             int q = 0;
-            for(;firstIsGreater(currDividend, x2) || currDividend.equals(x2);q++){
+            while(firstIsGreater(currDividend, x2) || currDividend.equals(x2)){
                 currDividend = subtractString(currDividend, x2);
+                currDividend = trimZeroes(currDividend);
+                q++;
             }
             result += Integer.toString(q);
-            
         }
 
         return trimZeroes(result);
@@ -285,8 +288,7 @@ public class AInteger {
 
     public AInteger divide(AInteger other){
         if(other.value.equals("0")){
-            System.out.println("Error: Division by zero!");
-            return null;
+            return AInteger.parse("Error: Division by zero.");
         }
         else if(this.value.equals("0")){
             return AInteger.parse("0");
