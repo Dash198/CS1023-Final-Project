@@ -1,3 +1,4 @@
+package test_scripts;
 import arbitraryarithmetic.*;
 
 public class MyInfArith {
