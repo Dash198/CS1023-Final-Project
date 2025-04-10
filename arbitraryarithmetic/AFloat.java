@@ -222,16 +222,17 @@ public class AFloat {
     private String addIntString(String x1, String x2){
         // Adds two non-negative INTEGERS x1 and x2 and returns their non-negative sum.
 
-        String result = "";
-        int n1 = x1.length(), n2 = x2.length();
+        String result = "";     // Empty String where the sum will be stored.
+        int n1 = x1.length();
+        int n2 = x2.length();     
         int carry = 0;
 
+        // Pad zeroes to the number with lesser digits.
         int diff = (n1<n2?n2-n1:n1-n2);
         String zeroes = "";
         for(int i=0;i<diff;i++){
             zeroes+="0";
         }
-
         if(n1<n2){
             x1 = zeroes + x1;
             n1 += diff;
@@ -241,6 +242,7 @@ public class AFloat {
             n2 += diff;
         }
 
+        // Digit-wise addition.
         for(int i = n1-1; i>=0; i--){
             int a1 = x1.charAt(i) - '0';
             int a2 = x2.charAt(i) - '0';
@@ -252,21 +254,27 @@ public class AFloat {
             result = Integer.toString(sum) + result;
         }
 
+        // Prepend the carry if it is positive.
         if(carry > 0){
             result = Integer.toString(carry) + result;
         }
 
+        // Remove the leading zeroes.
         return trimIntZeroes(result);
     }
 
     private String addString(String x1, String x2){
         // Adds two non-negative decimals x1 and x2 and returns their non-negative sum.
 
+
+        // Split the number into its integer and fractional parts.
         String[] a = x1.split("\\.");
         String[] b = x2.split("\\.");
 
-        String result = "";
+        String result = "";         // Empty String to store the final result.
 
+
+        // Adding the fractional parts together
         String o1 = a[1];
         String o2 = b[1];
 
@@ -297,8 +305,11 @@ public class AFloat {
             result = Integer.toString(sum%10) + result;
         }
 
+        // Prepend the decimal point, and then add the integer parts together as well.
         result = "." + result;
 
+        // Not using addIntString as the carry from the decimal part needs to be added too.
+        // Now add the integer parts and prepend to result.
         o1 = a[0];
         o2 = b[0];
 
@@ -332,19 +343,22 @@ public class AFloat {
             result = Integer.toString(carry) + result;
         }
 
+        // Trim leading and trailing zeroes from the result.
         return trimZeroes(result);
     }
 
     private String subtractIntString(String x1, String x2){
         // Subtracts two non-negative INTEGERS x1, x2 where x1 > x2 and returns their difference.
 
+        // Logic is samw as the subtractString function from AInteger class.
         if(x1.equals(x2))
-            return "0";
+            return "0";     // 0 case.
         String result = "";
 
         int n1 = x1.length();
         int n2 = x2.length();
 
+        // Pad zeroes to x2 if no. of digits in x2 < n1.
         int diff = n1-n2;
         String zeroes = "";
 
@@ -357,6 +371,7 @@ public class AFloat {
 
         boolean given = false;
 
+        // Digit-wise subtraction.
         for(int i = n1-1; i>=0; i--){
             int a1 = x1.charAt(i) - '0';
             int a2 = x2.charAt(i) - '0';
@@ -375,15 +390,18 @@ public class AFloat {
             result = Integer.toString(d)+result;
         }
 
+        // Remove leading zeroes.
         return trimIntZeroes(result);
     }
 
     public String subtractString(String a, String b){
         // Subtracts two non-negative decimals a, b, where a > b and returns their non-negative difference.
 
+        // Split the numbers' integer and fractional parts.
         String[] x1 = a.split("\\.");
         String[] x2 = b.split("\\.");
 
+        // Start by subtracting the fractional parts digit-wise.
         String result = "";
 
         String o1 = x1[1];
@@ -425,6 +443,7 @@ public class AFloat {
             result = Integer.toString(dif) + result;
         }
 
+        // Add a decimal point and repeat for the integer part (borrowing carries here too).
         result = "." + result;
 
         o1 = x1[0];
@@ -465,17 +484,21 @@ public class AFloat {
             result = Integer.toString(dif) + result;
         }
 
+        // Remove any leading and trailing zeroes from the final result.
         return trimZeroes(result);
     }
 
     private String multiplyString(String a, String b){
         // Multiplies two non-negative decimals a, b and returns their product.
 
+        // Split the numbers' integer and fractional parts.
         String[] x1 = a.split("\\.");
         String[] x2 = b.split("\\.");
 
+        // Calculate total number of decimal digits = sum of no. of decimal digits of a and b.
         int decimalPoints = x1[1].length() + x2[1].length();
 
+        // Remove the decimal points and multiply them as integers.
         String o1 = x1[0] + x1[1];
         String o2 = x2[0] + x2[1];
 
@@ -487,6 +510,7 @@ public class AFloat {
             int a2 = o2.charAt(i) - '0';
             String currProduct = "";
             
+            // Mutiply each digit of o1 with i'th digit of o2.
             int carry = 0;
             for(int j = n1-1; j>=0; j--){
                 int a1 = o1.charAt(j) - '0';
@@ -500,32 +524,42 @@ public class AFloat {
                 currProduct = Integer.toString(carry) + currProduct;
             }
 
+            // Add zeroes to the product to adjust power of 10.
             for(int j=0;j<n2-1-i;j++){
                 currProduct += "0";
             }
 
+            // Add the product to the final result.
             result = addIntString(result, currProduct);
         }
 
+        // If number of digits in the final product is less than the number of required decimal places,
+        // then keep adding zeroes to the left of result until digits = 1 + number of required decimal places.
         while(result.length()<=decimalPoints){
             result = "0" + result;
         }
         int n = result.length();
-        result = result.substring(0,n-decimalPoints) + "." + result.substring(n-decimalPoints);
+        result = result.substring(0,n-decimalPoints) + "." + result.substring(n-decimalPoints);     // Insert the decimal point.
+
+        // Remove any leading or trailing zeroes.
         return trimZeroes(result);
     }
 
     private String divideString(String a, String b){
         // Divides two positive decimals a and b, and returns the result with an arbitrary precision (1000 decimal places for now).
 
+        // Split the numbers' integer and fractional parts.
         String[] x1 = a.split("\\.");
         String[] x2 = b.split("\\.");
 
-        int diff = (x1[1].length()<x2[1].length()?x2[1].length()-x1[1].length():x1[1].length()-x2[1].length());
+        // Store the difference in number of decimal places of the numbers.
+        int diff = x1[1].length() - x2[1].length();
 
+        // Remove the decimal places and first divide the numbers are integers.
         String o1 = x1[0] + x1[1];
         String o2 = x2[0] + x2[1];
 
+        // Removing any leading zeroes as it may break the method.
         o1 = trimIntZeroes(o1);
         o2 = trimIntZeroes(o2);
 
@@ -534,20 +568,36 @@ public class AFloat {
         String result = "0";
         String currDividend = "";
 
+        // Division Loop.
         for(int i=0;i<n1;i++){
-            currDividend += o1.charAt(i);
-            currDividend = trimIntZeroes(currDividend);
+
+            currDividend += o1.charAt(i);       // Append the next digit to the dividend.
+            currDividend = trimIntZeroes(currDividend);         // Trim any leading zeroes acquired from the previous iteration.
+
+            // Repeatedly subtract o2 from the dividend untul dividen < o2.
             int q = 0;
             while(firstIntIsGreater(currDividend, o2) || currDividend.equals(o2)){
                 currDividend = subtractIntString(currDividend, o2);
                 currDividend = trimIntZeroes(currDividend);
                 q++;
             }
+
+            // Append the number of iterations.
             result += Integer.toString(q);
         }
 
-        int index = 0;
+        // Going for further precision:
+        // Since we aim for say, p decimal places, the number of digits needed to be appended to
+        // the result will be p - diff at max since there are already 'diff' decimal points.
+        // This is worst case though, obviously the loop will stop if the dividen becomes zero, i.e,
+        // the number is fully divided.
+
+        // Next division loop.
+        int index = 0;      // Stores the number of extra decimal places needed to go.
         for(; index<this.divPrecision-diff && !currDividend.equals("0");index++){
+
+            // Same logic as the previous division loop, but instead of appending the next
+            // digit, we append a zero to the dividend.
             currDividend += "0";
             currDividend = trimIntZeroes(currDividend);
             int q = 0;
@@ -560,103 +610,115 @@ public class AFloat {
         }
 
         int n = result.length();
-        int decimalPoints = index + (x1[1].length() > x2[1].length()?diff:-diff);
+        int decimalPoints = index + diff;       // Total number of decimal digits in the result.
         
         if(decimalPoints>0){
-            result = result.substring(0,n-decimalPoints) + "." + result.substring(n-decimalPoints);
-            result = trimZeroes(result);
+            result = result.substring(0,n-decimalPoints) + "." + result.substring(n-decimalPoints);    // Insert the decimal point.
+            result = trimZeroes(result);        // Trim any leading or trailing zeroes.
         }
         else{
+
+            // If number of decimal places is negative, that means we need to keep
+            // multiplying the result by 10 until the no. of required decimal places is 0.
             while(decimalPoints < 0){
                 result += "0";
                 decimalPoints++;
             }
         }
         
-        
+        // Return the final result.
         return result;
     }
 
     public AFloat add(AFloat other){
+        // Adds two AFloat objects to give another AFloat sum.
+
         if(this.isZero() && other.isZero()){
-            return new AFloat();
+            return new AFloat();                // Zero case - return 0.
         }
         else if(!(this.isNeg() || other.isNeg())){
-            return AFloat.parse(addString(this.value, other.value));
+            return AFloat.parse(addString(this.value, other.value));        // a + b case, a,b >= 0.
         }
         else if(this.isNeg() && !other.isNeg()){
-            return other.subtract(this.makePos());
+            return other.subtract(this.makePos());              // (-a) + b case.
         }
         else if(!this.isNeg()){
-            return this.subtract(other.makePos());
+            return this.subtract(other.makePos());              // a + (-b) case.
         }
         else{
-            return AFloat.parse("-" + this.makePos().add(other.makePos()).value);
+            return AFloat.parse("-" + this.makePos().add(other.makePos()).value);       // (-a) + (-b) case.
         }
     }
 
     public AFloat subtract(AFloat other){
+        // Subtracts two AFloat objects to give thir AFloat difference.
+
         if(this.isZero() && other.isZero()){
-            return new AFloat();
+            return new AFloat();                // Zero case - a = b = 0.
         }
-        else if(!(this.isNeg() || other.isNeg())){
+        else if(!(this.isNeg() || other.isNeg())){      // Both positive case.
+
             if(this.isGreater(other)){
-                return AFloat.parse(subtractString(this.value, other.value));
+                return AFloat.parse(subtractString(this.value, other.value));       // a > b : return a - b.
             }
             else{
-                return AFloat.parse("-" + subtractString(other.value, this.value));
+                return AFloat.parse("-" + subtractString(other.value, this.value));     // b > a : return -(b - a).
             }
         }
         else if(this.isNeg() && !other.isNeg()){
-            return AFloat.parse("-" + this.makePos().add(other).value);
+            return AFloat.parse("-" + this.makePos().add(other).value);     // (-a) - b case.
         }
         else if(!this.isNeg()){
-            return this.add(other.makePos());
+            return this.add(other.makePos());           // a - (-b) case.
         }
         else{
-            return other.makePos().subtract(this.makePos());
+            return other.makePos().subtract(this.makePos());        // (-a) - (-b) case.
         }
     
     }
 
     public AFloat multiply(AFloat other){
+        // Multiplies two AFloat objects and returns their AFloat product.
+
         if(this.isZero() || other.isZero()){
-            return new AFloat();
+            return new AFloat();        // Zero case - return 0 if either a or b are zero.
         }
         else if(!(this.isNeg() || other.isNeg())){
-            return AFloat.parse(multiplyString(this.value, other.value));
+            return AFloat.parse(multiplyString(this.value, other.value));       // a * b case.
         }
         else if(this.isNeg() && !other.isNeg()){
-            return AFloat.parse("-" + this.makePos().multiply(other).value);
+            return AFloat.parse("-" + this.makePos().multiply(other).value);    // (-a) * b case.
         }
         else if(!this.isNeg()){
-            return AFloat.parse("-" + this.multiply(other.makePos()).value);
+            return AFloat.parse("-" + this.multiply(other.makePos()).value);       // a * (-b) case.
         }
         else{
-            return this.makePos().multiply(other.makePos());
+            return this.makePos().multiply(other.makePos());        // (-a) * (-b) case.
         }
     }
 
     public AFloat divide(AFloat other){
+        // Divides the two AFloat objects and returns their AFloat result.
+
         if(this.isZero() || other.isZero()){
             if(other.isZero()){
-                throw new ArithmeticException("Error: Division by zero.");
+                throw new ArithmeticException("Error: Division by zero.");      // if b = 0, then throw an exception.
             }
             else{
-                return new AFloat();
+                return new AFloat();        // if a = 0, then return 0.
             }
         }
         else if(!(this.isNeg() || other.isNeg())){
-            return AFloat.parse(divideString(this.value, other.value));
+            return AFloat.parse(divideString(this.value, other.value));     // a / b case.
         }
         else if(this.isNeg() && !other.isNeg()){
-            return AFloat.parse("-" + this.makePos().divide(other).value);
+            return AFloat.parse("-" + this.makePos().divide(other).value);      // (-a) / b case.
         }
         else if(!this.isNeg()){
-            return AFloat.parse("-" + this.divide(other.makePos()).value);
+            return AFloat.parse("-" + this.divide(other.makePos()).value);      // a / (-b) case.
         }
         else{
-            return this.makePos().divide(other.makePos());
+            return this.makePos().divide(other.makePos());      // (-a) / (-b) case.
         }
     }
 }
