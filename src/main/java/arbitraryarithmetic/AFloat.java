@@ -1,5 +1,7 @@
 package arbitraryarithmetic;
 
+import java.util.InputMismatchException;
+
 public class AFloat {
 
       /*
@@ -25,9 +27,24 @@ public class AFloat {
     public AFloat(String s){
         // This constructor initialises the value in s to this object. The String s must be an integer or a decimal.
 
-        s = addZeroes(s);       // Adds a '.0' if s is an integer.
-        s = trimZeroes(s);      // Trim any leading zeroes from the left or any trailing zeroes to the right.
-        this.value = addZeroes(s);
+        if(s != null){
+            int dec = 0;
+            for(char c:s.toCharArray()){
+                if(!(Character.isDigit(c) || c=='.' || dec<2)){
+                    throw new InputMismatchException("Error: Expected input to be a decimal!");
+                }
+                if(c=='.'){
+                    dec++;
+                }
+            }
+            s = addZeroes(s);       // Adds a '.0' if s is an integer.
+            s = trimZeroes(s);      // Trim any leading zeroes from the left or any trailing zeroes to the right.
+            this.value = addZeroes(s);
+        }
+        else{
+            throw new InputMismatchException("Error: Expected input to be a decimal!");
+        }
+            
     }
 
     public AFloat(AFloat other){

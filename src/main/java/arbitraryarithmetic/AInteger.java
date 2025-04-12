@@ -1,5 +1,7 @@
 package arbitraryarithmetic;
 
+import java.util.InputMismatchException;
+
 public class AInteger {
 
     /*
@@ -37,7 +39,13 @@ public class AInteger {
     public static AInteger parse(String s){
         // A static function that creates an instance of AInteger from a given String.
 
-        return new AInteger(s);
+        // Check if the String is a number or else throw an exception.
+        if(s != null && s.matches("\\d+")){
+            return new AInteger(s);
+        }
+        else{
+            throw new InputMismatchException("Error: Expected input to be an integer!");
+        }
     }
 
     public String getValue(){
