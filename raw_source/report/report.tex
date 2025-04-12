@@ -1,0 +1,247 @@
+\documentclass[15pt]{article}
+
+\title{Infinite Precision Calculator\\ \large Final Project Report for CS1023 - Software Development Fundamentals}
+\author{Devansh Tripathi - CS24BTECH11022}
+\date{\today}
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CS1023 Final Project}
+\lhead{Devansh Tripathi}
+\rfoot{\thepage}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\huge \bfseries Infinite Precision Calculator \par}
+    \vspace{0.5cm}
+
+    {\Large Final Project Report for CS1023\\Software Development Fundamentals \par}
+    \vspace{1.5cm}
+
+    {\Large \textbf{Submitted by:} \par} 
+    \vspace{0.3cm}
+    {\large Devansh Tripathi \par} 
+    {\large CS24BTECH11022 \par} 
+    \vspace{2cm}
+
+    {\large \textbf{Date:} \today \par} 
+
+    \vfill
+    {\large Indian Institute of Technology Hyderabad \par}
+\end{titlepage}
+
+\newpage
+\section{Abstract}
+
+This Java library contains classes and methods to enable infinite precision arithmetic 
+operations for integers and float types. This solves the problem of doing addition, 
+subtraction, multiplication and division on large numbers that may overflow the bounds 
+of a regular \texttt{int} or \texttt{float}, or even \texttt{long} or \texttt{double}, or it may be the case with 
+their result (eg: multiplying two very big numbers or infinite division).\\
+
+\textbf{The main challenges in the project were:}
+\begin{itemize}
+    \item Performing the operations on numbers with different number of digits.
+    \item Operations on float types as they have integral and fractional parts.
+    \item Logic for handling position of decimal points in the case of multiplication or division of float types and acheiving precision upto n places.
+    \item Dealing with negative numbers and handling cases for each operation.
+\end{itemize}
+
+
+\section{Introduction}
+
+Precision is quite important for complex calculations where even small changes can 
+drastically change the final result. Hence, this library tries to present a solution 
+to this problem of bounded values of standard \texttt{int}, \texttt{long}, \texttt{float} and \texttt{double} types in 
+Java by storing the numbers as Strings, and then doing the required operation digit-wise 
+and storing the result into a String as well. Since there is no explicit bound on the 
+size of a String in Java, this solves the problem of precision as the result can be as 
+long as desired.\\
+
+\textbf{Data range of the standard data types in Java:}
+\begin{itemize}
+    \item  int : -2147483648 to 2147483647
+    \item long : -9223372036854775808 to 9223372036854775807
+    \item float : 1.40239846e-45 to 3.40282347e+38
+    \item double : 4.94065645841246544e-324 to 1.79769313486231570e+308
+\end{itemize}
+
+\textbf{What this library supports:}
+\begin{itemize}
+    \item Addition, Subtraction, Multiplication and Divison of numbers of arbitrary length, even those exceeding the data range of the standard data types.
+    \item Division producing a result capable of having an arbitrary amount of decimal places, it has been set to 1000 but can be extended.
+\end{itemize}
+
+\newpage
+
+\section{Features}
+
+\textbf{A brief description of the main components of this library:}
+\begin{itemize}
+    \item \texttt{AInteger}
+    \begin{itemize}
+        \item This class handles parsing integers(small and large) and all the integer-related operations.
+        \item Each \texttt{AInteger} object stores the number given to it as a String.
+        \item Since the numbers are stored as Strings, the length of the numbers can be arbitrary.
+        \item Supports addition, subtraction, multiplication, and division.
+    \end{itemize}
+    
+    \item \texttt{AFloat}
+    \begin{itemize}
+        \item This class handles all the float-related operations and parsing.
+        \item Each \texttt{AFloat} object stores the floating point number given to it as a String.
+        \item The number can be arbitrary precision- there is no bound on it from either side.
+        \item Supports addition, subtraction, multiplication and division upto arbitrary precision.
+    \end{itemize}
+    
+    \item \texttt{MyInfArith}
+    \begin{itemize}
+        \item Although this class is not a part of the package, it is still a convenient way to use the above classes via the command line.
+        \item Usage of this class is given in the \textbf{Build and Run} section.
+    \end{itemize}
+\end{itemize}
+
+\section{Implementation}
+
+\begin{itemize}
+    \item Language: \textbf{Java 21}
+    
+    \item Build Tool used: \textbf{Maven}
+    
+    \item Structure: The main source files are located in the \texttt{src/main/java/arbitraryarithmetic}
+    directory, namely \texttt{AInteger.java} and \texttt{AFloat.java}.
+
+    \item Each number is stored in an object which is either \texttt{AInteger} or 
+    \texttt{AFloat}. The number is stored as a private variable \texttt{value}, which
+    can be accessed by using the accessor function \texttt{getValue()}.
+
+    \item Operations are implemented as methods, so the four operations are implemented as 
+    \texttt{add}, \texttt{subtract}, \texttt{multiply} and \texttt{divide} in either class.
+
+    \item To perform an operation between \texttt{x1} and \texttt{x2}, use the statment 
+    \texttt{x1.operation\_name(x2)}, for example if we want to add two \texttt{AInteger} objects \texttt{a} and \texttt{b}, 
+    we would use \texttt{a.add(b)}.
+
+    \item Performing an operation will return the result of the operation as an object 
+    of the same type. The value of the result can be accessed by the \texttt{getValue()} function.
+
+    \item The main challenges encountered in the implementation were:
+    
+    \begin{itemize}
+        \item Performing the operations on numbers with different number of digits.
+        \item Operations on float types as they have integral and fractional parts.
+        \item Logic for handling position of decimal points in the case of multiplication or division of float types and acheiving precision upto $n$ places.
+        \item Dealing with negative numbers and handling cases for each operation.
+    
+    \end{itemize}
+\end{itemize}
+
+\section{Testing}
+
+    Correctness of the functions of these classes were mainly testes manually, and all the
+    cases used can be found in \texttt{raw\_source/test\_files/} directory.
+
+    \textbf{Here are some example cases:}
+
+    \subsection{AInteger}
+
+    \begin{enumerate}
+        \item 123 + 456 = 579
+        \item -123 + 456 = 333
+        \item 123 + -456 = -333
+        \item -123 + -456 = -579
+        \item 1000000000000000000000000 + 1 = 1000000000000000000000001
+        \item 999999999999999999999999 + 1 = 1000000000000000000000000
+        \item 1000000000000000000000000 - 999999999999999999999999 = 1
+        \item -999999999999999999999999 + -1 = -1000000000000000000000000
+        \item 0 + 0 = 0
+        \item 0 - 0 = 0
+        \item 0 - 123 = -123
+        \item 123 - 0 = 123
+    \end{enumerate}
+
+    \subsection{AFloat}
+
+    \begin{enumerate}
+        \item 1.0 / 3.0 = 0.333333.... (1000 places)
+        \item 2.0 / 3.0 = 0.666666.... (1000 places)
+        \item 0.0000000000001 + 0.0000000000001 = 0.0000000000002
+        \item 999999999999.999999999999 + 0.000000000001 = 1000000000000.0
+        \item 999999999999.999 * 1.001 = 1000999999999.998999
+        \item -123456.789 * -1.0 = 123456.789
+        \item 1.000000 / 1000000.0 = 0.000001
+        \item -0.0 + 0.0 = 0.0
+        \item -0.0 - -0.0 = 0.0
+        \item 0.0 * 0.1 = 0.0
+        \item 0.0 / 0.1 = 0.0
+        \item 1.0000000000001 - 1.0000000000000 = 0.0000000000001
+        \item 1000.0000001 - 999.9999999 = 0.0000002
+    \end{enumerate}
+
+
+    All these answers can be verified to be correct.
+
+\section{Build and Run} \label{bnr}
+
+\begin{itemize}
+    \item Dependecies: \textbf{Java 21}, \textbf{Maven}
+    \item How to build the package (.JAR):
+    
+    Run the following command in the terminal from the project directory:\\
+    \texttt{mvn clean package}
+
+    \item How to link the package to your file:
+    
+    \begin{itemize}
+        \item First, compile your file using the command:\\
+        \texttt{javac -cp .:<add the absolute path to the aarithmetic.jar package here> <relative path to your desired file>}
+
+        \item Next, run your file using:\\
+        \texttt{java -cp .:<absolute path to aarithmetic.jar> <relative path to your file>}
+    \end{itemize}
+
+    \item If you just want to test out the package functions or perform simple operations, there are two ways to do this:
+    \
+    \begin{itemize}
+        \item Link the package to \texttt{MyInfArith/MyInfArith.java} and then run it with the following command:\\
+        \texttt{java -cp .:<absolute path to aarithmetic.jar> MyInfArith.MyInfArith <int/float> <add/sub/mul/div> <operand\_1> <operand\_2>}
+
+        \item Configure the \texttt{my\_exe} Python script, editing the path to the .JAR file, and then run it with the four arguments, which will automate the above process:\\
+        \texttt{<python3/python> my\_exe <int/float> <add/sub/mul/div> <operand\_1> <operand\_2>}\\
+        or\\
+        \texttt{./my\_exe <int/float> <add/sub/mul/div> <operand\_1> <operand\_2>}
+
+        \item Example Input:\\
+        \texttt{./my\_exe float sub 840196454.51725 712586963.70283}\\
+        Output:\\
+        \texttt{127609490.81442}
+    \end{itemize}
+\end{itemize}
+
+\section{Conclusion}
+
+\subsection{Key Learnings}
+
+\begin{itemize}
+    \item Handling large numbers as Strings and performing arithmetic operations on them.
+    \item Object Oriented Programming with Java.
+    \item Logic of basic arithmetic operations digit-wise.
+    \item Build systems in Java.
+    \item How to use .JAR packages in files.
+    \item Using Python to build execution scripts.
+\end{itemize}
+
+\subsection{Areas of Improvement}
+
+\begin{itemize}
+    \item A lot of code is reused within the same class for different cases. For example, trimming zeroes for integers and floats in the \texttt{AFloat} class has the same core logic but slightly different implementation.
+    \item Right now I am not handling the operations universally, i.e., I am checking for the positivity of the operands and making cases for each operation.
+\end{itemize}
+
+
+\end{document}

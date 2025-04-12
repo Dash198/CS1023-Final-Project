@@ -55,7 +55,7 @@ The data range of the standard data types in Java are:
 - Structure:
   - The main source files are located in the `src/main/java/arbitraryarithmetic/` directory, namely `AInteger.java` and `AFloat.java`.
 
-- Each number is stored in an object which is either `AInteger` or `AFloat`. The number is stored as a private variable `value`, which ca be accessed by using the accessor function `getValue()`.
+- Each number is stored in an object which is either `AInteger` or `AFloat`. The number is stored as a private variable `value`, which can be accessed by using the accessor function `getValue()`.
 - Operations are implemented as methods, so the four operations are implemented as `add`, `subtract`, `multiply` and `divide` in either class.
 - To perform an operation between `x1` and `x2`, use the statment `x1.operation_name(x2)`, for example if we want to add two `AInteger` objects a and b, we would use `a.add(b)`.
 - Performing an operation will return the result of the operation as an object of the same type. The value of the result can be accessed by the `getValue()` function.
