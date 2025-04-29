@@ -74,7 +74,7 @@ long as desired.\\
 \textbf{What this library supports:}
 \begin{itemize}
     \item Addition, Subtraction, Multiplication and Divison of numbers of arbitrary length, even those exceeding the data range of the standard data types.
-    \item Division producing a result capable of having an arbitrary amount of decimal places, it has been set to 1000 but can be extended.
+    \item Division producing a result capable of having an arbitrary amount of decimal places, it has been set to 30 but can be extended.
 \end{itemize}
 
 \newpage
@@ -242,6 +242,7 @@ long as desired.\\
 \begin{itemize}
     \item A lot of code is reused within the same class for different cases. For example, trimming zeroes for integers and floats in the \texttt{AFloat} class has the same core logic but slightly different implementation.
     \item Right now I am not handling the operations universally, i.e., I am checking for the positivity of the operands and making cases for each operation.
+    \item The approach used is very basic and primitive without much optimization, so any big operations (like multiplication of numbers with 20,000 digits) can be very slow, but they are accurate.
 \end{itemize}
 
 

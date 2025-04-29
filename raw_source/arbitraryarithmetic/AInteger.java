@@ -1,4 +1,4 @@
-package raw_source.arbitraryarithmetic;
+package arbitraryarithmetic;
 
 public class AInteger {
 

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            README - Infinite Precision Calculator
+        </title>
+    </head>
+
+    <body>
+        <h1>Infinite Precision Calculator</h1>
+
+        <h2>Info</h2>
+
+        <p>This Java library contains classes and methods to enable infinite precision arithmetic 
+            operations for integers and float types. This solves the problem of doing addition, 
+            subtraction, multiplication and division on large numbers that may overflow the bounds of 
+            a regular <code>int</code> or <code>float</code>, or even <code>long</code> or <code>double</code>, or it may be the case with their 
+            result (eg: multiplying two very big numbers or infinite division).</p>
+
+        <p>This library was created as a final project for the <b>CS1023 - Software Development Fundamentals</b> course at IIT Hyderabad.</p>
+
+        <h3>The main challenges in the project were:</h3>
+        <ul>
+        <li>Performing the operations on numbers with different number of digits.</li>
+        <li>Operations on float types as they have integral and fractional parts.</li>
+        <li>Logic for handling position of decimal points in the case of multiplication or division of float types and acheiving precision upto n places.</li>- Dealing with negative numbers and handling cases for each operation.
+        <li>The implementation of the operations may be inefficient, but it works!</li>
+        </ul>
+
+        <h2>Introduction</h2>
+
+        <p>Precision is quite important for complex calculations where even small changes can drastically change the final result. Hence, this library tries to present a solution to this problem of bounded values of standard <code>int</code>, <code>long</code>, <code>float</code> and <code>double</code> types in Java by storing the numbers as Strings, and then doing the required operation digit-wise and storing the result into a String as well. Since there is no explicit bound on the size of a String in Java, this solves the problem of precision as the result can be as long as desired.</p>
+
+        <h3>Limitations of the standard types in Java:</h3>
+        <p>The data range of the standard data types in Java are:</p>
+        <ul>
+        <li><code>int</code> : <b>-2147483648</b> to <b>2147483647</b></li>
+        <li><code>long</code> : <b>-9223372036854775808</b> to <b>9223372036854775807</b></li>
+        <li><code>float</code> : <b>1.40239846e-45</b> to <b>3.40282347e+38</b></li>
+        <li><code>double</code> : <b>4.94065645841246544e-324</b> to <b>1.79769313486231570e+308</b></li>
+        </ul>
+
+        <h3>What this library supports:</h3>
+        <ul>
+        <li>Addition, Subtraction, Multiplication and Divison of numbers of arbitrary length, even those exceeding the data range of the standard data types.</li>
+        <li>Division producing a result capable of having an arbitrary amount of decimal places, it has been set to 30 but can be extended.</li>
+        </ul>
+
+        <h2>Features</h2>
+
+        <h3>A brief description of the main components of this library:</h3>
+
+        <ul>
+        <li> 
+            <code>AInteger</code>
+            <ul>
+                <li>This class handles parsing integers(small and large) and all the integer-related operations.</li>
+                <li>Each <code>AInteger</code> object stores the number given to it as a String.</li>
+                <li>Since the numbers are stored as Strings, the length of the integers can be arbitrary.</li>
+                <li>Supports addition, subtraction, multiplication and division.</li>
+            </ul>
+        </li>
+
+        <li>
+            <code>AFloat</code>
+            <ul>
+                <li>This class handles all the float-related operations and parsing.</li>
+                <li>Each <code>AFloat</code> object stores the floating point number given to it as a String.</li>
+                <li>The number can be arbitrary precision- there is no bound on it from either side.</li>
+                <li>Supports addition, subtraction, multiplication and division upto arbitrary precision.</li>
+            </ul>
+        </li>
+
+        <li>
+            <code>MyInfArith</code>
+            <ul>
+                <li>Although this class is not a part of the package, it is still a convenient way to use the above classes via the command line.</li>
+                <li>Usage of this class is given in the <b>Usage</b> section.</li>
+            </ul>
+        </li>
+        </ul>
+
+        <h2>Implementation</h2>
+        <ul>
+            <li>Language : <b>Java 21</b></li>
+            <li>Build Tool used : <b>Maven</b></li>
+            <li>Structure:
+                <ul>
+                    <li>The main source files are located in the <code>src/main/java/arbitraryarithmetic/</code> directory, namely <code>AInteger.java</code> and <code>AFloat.java</code>.</li>
+                </ul></li>
+            <li>Each number is stored in an object which is either <code>AInteger</code> or <code>AFloat</code>. The number is stored as a private variable <code>value</code>, which can be accessed by using the accessor function <code>getValue()</code>.</li>
+            <li>Operations are implemented as methods, so the four operations are implemented as <code>add</code>, <code>subtract</code>, <code>multiply</code> and <code>divide</code> in either class.</li>
+            <li>To perform an operation between <code>x1</code> and <code>x2</code>, use the statment <code>x1.operation_name(x2)</code>, for example if we want to add two <code>AInteger</code> objects a and b, we would use <code>a.add(b)</code>.</li>
+            <li>Performing an operation will return the result of the operation as an object of the same type. The value of the result can be accessed by the <code>getValue()</code> function.</li>
+            <li>The main challenges encountered in the implementation are:
+                <ul>
+                    <li>Performing the operations on numbers with different number of digits.</li>
+                    <li>Operations on float types as they have integral and fractional parts.</li>
+                    <li>Logic for handling position of decimal points in the case of multiplication or division of float types and acheiving precision upto n places.</li>
+                    <li>Dealing with negative numbers and handling cases for each operation.</li>
+                </ul></li>
+        </ul>
+
+
+        <h2>Build and Run</h2>
+
+        <ul>
+            <li>Dependencies: <b>Java 21</b>, <b>Maven</b></li>
+            <li>How to build the package (.JAR): <code>mvn clean package</code></li>
+            <li>How to link the package to your file:
+                <ul>
+                    <li>First, compile the file using the command: <code>javac -cp .:<add the absolute path to the .jar package here> <relative path to your desired file></relative></code></li>
+                    <li>Next, run your file using: <code>java -cp .:<absolute path to .jar package> <relative path to your file></relative></code></li>
+                </ul></li>
+            <li>If you just want to test out the package, there are two ways to do this:
+                <ul>
+                    <li>Link the package to <code>MyInfArith/MyInArith.java</code> and then run it with the following command: <code>java -cp .:<absolute path to .jar package> MyInfArith.MyInfArith <int/float> <add/sub/mul/div> <operand1> <operand2></operand2></code>.</li>
+                    <li>Configure the <code>my_exe</code> Python script, editing the path to the .JAR file, and then run it with the four arguments, which will automate the above process: <code><python3/python> my_exe <int/float> <add/sub/mul/div> <operand1> <operand2>` or `./my_exe <int/float> <add/sub/mul/div> <operand1> <operand2></operand2></code>.</li>
+                    <li>Example Input: <code>./my_exe float sub 840196454.51725 712586963.70283</code> Output: <code>127609490.81442</code></li>
+                </ul></li>
+        </ul>
+
+    </body>
+</html>
