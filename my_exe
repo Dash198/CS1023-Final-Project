@@ -6,7 +6,7 @@ class MyInfArith:
 
     def __init__(self,mode):
         self.mode = mode
-        self.package_path = "/home/devansh/repos/CS1023-Final-Project/target/aarithmetic.jar"
+        self.package_path = "add the absolute path to your package here"
         self.test_path = "MyInfArith/MyInfArith"
 
     def compile(self):

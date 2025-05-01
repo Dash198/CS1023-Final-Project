@@ -1,5 +1,7 @@
 package raw_source.arbitraryarithmetic;
 
+import java.util.InputMismatchException;
+
 public class AFloat {
 
       /*
@@ -14,7 +16,7 @@ public class AFloat {
      */
 
     private String value;       // Private String to store the value of the current object.
-    private int divPrecision = 1000;        // Store the max number of decimal places we want to go till during division.
+    private int divPrecision = 30;        // Store the max number of decimal places we want to go till during division.
 
     public AFloat(){
         // Default constructor which initiliases the value of the object to 0.0
@@ -25,9 +27,24 @@ public class AFloat {
     public AFloat(String s){
         // This constructor initialises the value in s to this object. The String s must be an integer or a decimal.
 
-        s = addZeroes(s);       // Adds a '.0' if s is an integer.
-        s = trimZeroes(s);      // Trim any leading zeroes from the left or any trailing zeroes to the right.
-        this.value = addZeroes(s);
+        if(s != null){
+            int dec = 0;
+            for(char c:s.toCharArray()){
+                if(!(Character.isDigit(c) || c=='.' || dec<2)){
+                    throw new InputMismatchException("Error: Expected input to be a decimal!");
+                }
+                if(c=='.'){
+                    dec++;
+                }
+            }
+            s = addZeroes(s);       // Adds a '.0' if s is an integer.
+            s = trimZeroes(s);      // Trim any leading zeroes from the left or any trailing zeroes to the right.
+            this.value = addZeroes(s);
+        }
+        else{
+            throw new InputMismatchException("Error: Expected input to be a decimal!");
+        }
+            
     }
 
     public AFloat(AFloat other){
@@ -158,23 +175,8 @@ public class AFloat {
 
         result += ".";      // Add the decimal point.
 
-        // Removing trailing zeroes from the fractional part.
-        // Pretty much the same logic as removing leading zeroes in the integer part, but here we go right to left instead of left to right.
-        if(x[1].equals("0")){
-            result += "0";
-        }
-        else{
-            int index=x[1].length()-1;
-            while(index >=0 && x[1].charAt(index)=='0'){
-                index--;
-            }
-            if(index==-1){
-                result += "0";
-            }
-            else{
-                result += x[1].substring(0,index+1);
-            }
-        }
+        // Not removing zeroes from fractional part as they hold significance.
+        result += x[1];
         return (isNeg && !result.equals("0.0")?"-":"") + result;        // Negativity check.
     }
 
