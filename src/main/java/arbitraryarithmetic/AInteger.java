@@ -25,9 +25,19 @@ public class AInteger {
 
     public AInteger(String s){
         // Alternative constructor that assigns a String value passed to it. Note that the String must be an Integer.
-
-        s = trimZeroes(s);      // TrimZeroes trims any leading zeroes in the String.
-        this.value = s;
+        // Check if the String is a number or else throw an exception.
+        boolean isNeg = false;
+        if(s.charAt(0)=='-'){
+            isNeg = true;
+            s = s.substring(1);
+        }
+        if(s != null && s.matches("\\d+")){
+            s = trimZeroes(s);      // TrimZeroes trims any leading zeroes in the String.
+            this.value = (isNeg?"-":"") + s;
+        }
+        else{
+            throw new InputMismatchException("Error: Expected input to be an integer!");
+        }
     }
 
     public AInteger(AInteger other){
@@ -39,13 +49,7 @@ public class AInteger {
     public static AInteger parse(String s){
         // A static function that creates an instance of AInteger from a given String.
 
-        // Check if the String is a number or else throw an exception.
-        if(s != null && s.matches("\\d+")){
-            return new AInteger(s);
-        }
-        else{
-            throw new InputMismatchException("Error: Expected input to be an integer!");
-        }
+        return new AInteger(s);
     }
 
     public String getValue(){

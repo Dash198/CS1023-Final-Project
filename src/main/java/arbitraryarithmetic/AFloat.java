@@ -30,7 +30,7 @@ public class AFloat {
         if(s != null){
             int dec = 0;
             for(char c:s.toCharArray()){
-                if(!(Character.isDigit(c) || c=='.' || dec<2)){
+                if(!Character.isDigit(c) || (c=='.' && dec == 1)){
                     throw new InputMismatchException("Error: Expected input to be a decimal!");
                 }
                 if(c=='.'){
